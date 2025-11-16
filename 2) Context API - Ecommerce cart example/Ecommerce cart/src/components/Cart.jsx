@@ -1,8 +1,7 @@
-import { useContext } from "react";
-import { cartContext } from "../context/Cart.jsx";
+import { useCart } from "../context/Cart.jsx";
 
 const Cart = () => {
-  const cart = useContext(cartContext);
+  const cart = useCart();
   const total = cart.items.reduce((acc, item) => acc + Number(item.price), 0);
   return (
     <div className="cart">

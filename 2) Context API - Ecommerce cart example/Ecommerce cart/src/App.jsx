@@ -3,13 +3,13 @@ import Cart from "./components/Cart"
 
 // ** NOTE ** //
 // // We can only use/access/modify context in a component, if we add the below commented code in our component.
-// import { useContext } from "react";
-// import { cartContext } from "./context/Cart.jsx";
+// import { useCart } from "../context/Cart.jsx";
+
 
 function App() {
-  // const cart = useContext(cartContext);
+  // const cart = useCart();
   // console.log(cart);
-  
+
   return (
     <>
       <div className="App">
