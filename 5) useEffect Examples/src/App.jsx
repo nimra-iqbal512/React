@@ -1,58 +1,34 @@
-import { useState, useEffect } from "react"
-import { createConnection } from "./chat"
+// Listening to a global browser event:
+// In this example, the external system is the browser DOM itself. Normally, you'd specify event listeners with JSX, but you can't listen to the global 'window' object this way. 
+// An Effect lets you connect to the 'window' object and listen to its events. Listening to the 'pointermove' event lets you track the cursor position, and update the red dot to move it.
 
-function ChatRoom({roomId}){
-  const [serverUrl, setServerUrl] = useState('https://localhost:1234');
+import { useState, useEffect } from 'react';
 
-  useEffect(()=>{
-    const connection = createConnection(serverUrl, roomId);
-    connection.connect();
-    return ()=>{
-      connection.disconnect();
+export default function App() {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    function handleMove(e) {
+      setPosition({ x: e.clientX, y: e.clientY });
     }
-  }, [roomId, serverUrl]);
+    window.addEventListener('pointermove', handleMove); //When component mounts, it connects React to an external system (the browser window object).
+    return () => {
+      window.removeEventListener('pointermove', handleMove);
+    }
+  }, []);
 
   return (
-    <>
-      <label>
-        Server URL:{' '}
-        <input 
-          type="text" 
-          value={serverUrl}
-          onChange={e => setServerUrl(e.target.value)}
-        />
-      </label>
-      <h1>Welcome to the {roomId} room!</h1>
-    </>
+    <div style={{
+      position: 'absolute',
+      backgroundColor: 'pink',
+      borderRadius: '50%',
+      opacity: 0.6,
+      transform: `translate(${position.x}px, ${position.y}px)`,
+      pointerEvents: 'none',
+      left: -20,
+      top: -20,
+      width: 40,
+      height: 40,
+    }} />
   )
 }
-
-function App() {
-  const [roomId, setRoomId] = useState('gener');
-  const [show, setShow] = useState(false);
-
-  return (
-    <>
-      <label>
-        Choose te chatroom:{" "}
-        <select 
-          value={roomId}
-          onChange={e => setRoomId(e.target.value)}
-        >
-          <option value="general">general</option>
-          <option value="travel">travel</option>
-          <option value="music">music</option>
-        </select>
-      </label>
-      <br />
-      
-      <button onClick={()=> setShow(!show) }>
-        {show ? "Close chat" : "Open chat"}
-      </button>
-      {show && <hr />}
-      {show && <ChatRoom roomId={roomId} />}
-    </>
-  )
-}
-
-export default App
