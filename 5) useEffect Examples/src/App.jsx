@@ -1,34 +1,49 @@
-// Listening to a global browser event:
-// In this example, the external system is the browser DOM itself. Normally, you'd specify event listeners with JSX, but you can't listen to the global 'window' object this way. 
-// An Effect lets you connect to the 'window' object and listen to its events. Listening to the 'pointermove' event lets you track the cursor position, and update the red dot to move it.
+// Tiggering an animation:
+// In this example, the external system is animation library in 'animation.jsx'. It provides a JS class called 'FadeAnimation' that takes a DOM node as an argument and exposes start() and stop() methods to control the animation.
+// This component uses a 'ref' to access the underlying DOM node. The Effect reads the DOM node from the ref, and automatically starts the animationf or the node when the component appears.
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { FadeAnimation } from './animation';
 
-export default function App() {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+function Welcome() {
+  const ref = useRef(null);
 
   useEffect(() => {
-    function handleMove(e) {
-      setPosition({ x: e.clientX, y: e.clientY });
-    }
-    window.addEventListener('pointermove', handleMove); //When component mounts, it connects React to an external system (the browser window object).
+    const animation = new FadeAnimation(ref.current);
+    animation.start(1000);
     return () => {
-      window.removeEventListener('pointermove', handleMove);
+      animation.stop();
     }
   }, []);
 
   return (
-    <div style={{
-      position: 'absolute',
-      backgroundColor: 'pink',
-      borderRadius: '50%',
-      opacity: 0.6,
-      transform: `translate(${position.x}px, ${position.y}px)`,
-      pointerEvents: 'none',
-      left: -20,
-      top: -20,
-      width: 40,
-      height: 40,
-    }} />
+    <h1
+      ref={ref}
+      style={{
+        opacity: 0,
+        color: 'white',
+        padding: 50,
+        textAlign: 'center',
+        fontSize: 50,
+        backgroundImage: 'radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%'
+      }}
+    >
+      Welcome
+    </h1>
   )
 }
+
+const App = () => {
+  const [show, setShow] = useState(false);
+
+  return (
+    <>
+      <button onClick={() => setShow(!show)}>
+        {show ? 'Remove' : 'Show'}
+      </button>
+      <hr />
+      {show && <Welcome />}
+    </>
+  )
+}
+export default App
