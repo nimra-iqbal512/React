@@ -1,27 +1,26 @@
-// Listening to a global browser event:
+// Tracking element visibility:
+// In this example, the external system is again the browser DOM. The 'App' component displays a long list, then a 'Box' component, and then another long list. Scroll the list down. Notice that when all of the 'Box' component is fully visible in the viewport, the background color changes to black.
+// To implement this, the 'Box' component uses an Effect to manage an 'IntersectionObserver'. The browser API notifies you when the DOM element is visible in the viewport. 
 
-import { useState, useEffect } from 'react';
-import useWindowListener from './useWindowListener';
+import Box from "./Box"
 
-export default function App() {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  useWindowListener('pointermove', (e)=>{
-    setPosition({x: e.clientX, y: e.clientY})
-  })
-
+const App = () => {
   return (
-    <div style={{
-      position: 'absolute',
-      backgroundColor: 'pink',
-      borderRadius: '50%',
-      opacity: 0.6,
-      transform: `translate(${position.x}px, ${position.y}px)`,
-      pointerEvents: 'none',
-      left: -20,
-      top: -20,
-      width: 40,
-      height: 40,
-    }} />
+    <>
+      <LongSection />
+      <Box />
+      <LongSection />
+      <Box />
+      <LongSection />
+    </>
   )
+}
+export default App
+
+const LongSection = () => {
+  const items = [];
+  for (let i = 0; i < 50; i++) {
+    items.push(<li key={i}>Item # {i}.. (keep scrolling)</li>)
+  }
+  return <ul>{items}</ul>
 }
