@@ -1,26 +1,55 @@
-// Tracking element visibility:
-// In this example, the external system is again the browser DOM. The 'App' component displays a long list, then a 'Box' component, and then another long list. Scroll the list down. Notice that when all of the 'Box' component is fully visible in the viewport, the background color changes to black.
-// To implement this, the 'Box' component uses an Effect to manage an 'IntersectionObserver'. The browser API notifies you when the DOM element is visible in the viewport. 
+import { useState } from "react"
+import { useChatRoom } from "./useChatRoom";
 
-import Box from "./Box"
+function ChatRoom({ roomId }) {
+  const [serverUrl, setServerUrl] = useState('https://localhost:1234');
 
-const App = () => {
+  useChatRoom({
+    roomId: roomId,
+    serverUrl: serverUrl
+  });
+
   return (
     <>
-      <LongSection />
-      <Box />
-      <LongSection />
-      <Box />
-      <LongSection />
+      <label>
+        Server URL:{' '}
+        <input
+          type="text"
+          value={serverUrl}
+          onChange={e => setServerUrl(e.target.value)}
+        />
+      </label>
+      <h1>Welcome to the {roomId} room!</h1>
     </>
   )
 }
-export default App
 
-const LongSection = ()=>{
-  const items = [];
-  for(let i=0; i<50; i++){
-    items.push(<li key={i}>Item # {i}.. (keep scrolling)</li>)
-  }
-  return <ul>{items}</ul>
+function App() {
+  const [roomId, setRoomId] = useState('gener');
+  const [show, setShow] = useState(false);
+
+  return (
+    <>
+      <label>
+        Choose the chatroom:{" "}
+        <select
+          value={roomId}
+          onChange={e => setRoomId(e.target.value)}
+        >
+          <option value="general">general</option>
+          <option value="travel">travel</option>
+          <option value="music">music</option>
+        </select>
+      </label>
+      <br />
+
+      <button onClick={() => setShow(!show)}>
+        {show ? "Close chat" : "Open chat"}
+      </button>
+      {show && <hr />}
+      {show && <ChatRoom roomId={roomId} />}
+    </>
+  )
 }
+
+export default App
