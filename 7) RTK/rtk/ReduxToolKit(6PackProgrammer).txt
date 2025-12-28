@@ -1,0 +1,389 @@
+===== 'value' created in Home.js can't be accessed in App.js
+== App.js:
+import Home from "./Home"
+
+const App = () => {
+  return (
+    <div><Home /></div>
+  )
+}
+export default App
+
+== Home.js:
+const Home = () => {
+    const value = 20;
+  return (
+    <div>
+      <h2>{value}</h2>
+
+      <button>Increment</button>
+      <button>Decrement</button>
+    </div>
+  );
+}
+export default Home
+
+
+===== 'value' created in App.js can be accessed in Home.js
+== App.js:
+import Home from "./Home"
+
+const App = () => {
+  const value = 20;
+  return (
+    <div><Home value={value} /></div>
+  )
+}
+export default App
+
+== Home.js:
+const Home = ({value}) => {
+    // const value = 20;
+  return (
+    <div>
+      <h2>{value}</h2>
+
+      <button>Increment</button>
+      <button>Decrement</button>
+    </div>
+  );
+}
+export default Home
+
+
+===== Create and use store
+== To install redux toolkit:
+npm install @reduxjs/toolkit react-redux
+
+== src\store.js:
+import { configureStore } from "@reduxjs/toolkit";
+
+const store = configureStore({
+    reducer: {},
+})
+
+export default store;
+
+
+== Reducers.js:
+import { createReducer } from "@reduxjs/toolkit";
+
+// // createReducer has two objects
+// export const customReducer = createReducer({}, {})
+
+// Defining objects separately
+const initialState = {
+  c: 0,
+};
+export const customReducer = createReducer(initialState, {
+  increment: (state, action) => {
+    state.c += 1;
+  },
+  incrementByValue: (state, action) => {
+    state.c += action.payload; //payload is the parameter passed by user
+  },
+  decrement: (state, action) => {
+    state.c -= 1;
+  },
+});
+
+
+===== Value Updated in console(not in screen):
+== Download Chrome Extension: 'Redux DevTools' to see store values in cosole
+== index.js: 
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import { Provider } from 'react-redux';
+import store from './store';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>
+);
+
+
+== store.js:
+import { configureStore } from "@reduxjs/toolkit";
+import { customReducer } from "./Reducers";
+
+const store = configureStore({
+    reducer: {
+        custom: customReducer
+    },
+})
+
+export default store;
+
+
+== Reducers.js:
+import { createReducer } from "@reduxjs/toolkit";
+
+// // createReducer has two objects
+// export const customReducer = createReducer({}, {})
+
+// // Defining objects separately, (but this has been depreciated)
+// const initialState = {
+//   c: 0,
+// };
+// export const customReducer = createReducer(initialState, {
+//   increment: (state, action) => {
+//     state.c += 1;
+//   },
+//   incrementByValue: (state, action) => {
+//     state.c += action.payload; //payload is the parameter passed by user
+//   },
+//   decrement: (state, action) => {
+//     state.c -= 1;
+//   },
+// });
+
+// ==============================
+// ✅ Old (❌ Deprecated):
+
+// js
+// Copy code
+// createReducer(initialState, {
+//   increment: (state) => { ... }
+// })
+// ✅ New (✔️ Recommended):
+
+// js
+// Copy code
+// createReducer(initialState, (builder) => {
+//   builder.addCase("increment", (state) => { ... })
+// })
+// ==================================
+
+const initialState = {
+  c: 0,
+};
+export const customReducer = createReducer(initialState, (builder) => {
+  builder
+    .addCase("increment", (state) => {
+      state.c += 1;
+    })
+    .addCase("incrementByValue", (state, action) => {
+      state.c += action.payload; //payload is the parameter passed by user
+    })
+    .addCase("decrement", (state) => {
+      state.c -= 1;
+    });
+});
+
+
+== App.js:
+import Home from "./Home"
+
+const App = () => {
+  return (
+    <div><Home /></div>
+  )
+}
+export default App
+
+
+== Home.js:
+import { useDispatch } from "react-redux";
+// useDispatch is to trigger action
+// useSelector is to access state value
+
+const Home = () => {
+  const value = 20;
+  const dispatch = useDispatch();
+
+  const addBtn = () => {
+    dispatch({
+      type: "increment",
+    });
+  };
+  const addBtn25 = () => {
+    dispatch({
+      type: "incrementByValue",
+      payload: 25,
+    });
+  };
+  const subBtn = () => {
+    dispatch({
+      type: "decrement",
+    });
+  };
+  return (
+    <div>
+      <h2>{value}</h2>
+
+      <button onClick={addBtn}>Increment</button>
+      <button onClick={addBtn25}>Increment by 25</button>
+      <button onClick={subBtn}>Decrement</button>
+    </div>
+  );
+};
+export default Home;
+
+
+===== Access store value in Home.js: (All files are same as above, just Home.js is updated)
+== Home.js:
+import { useDispatch, useSelector } from "react-redux";
+// useDispatch is to trigger action
+// useSelector is to access state value
+
+const Home = () => {
+//   const value = 20;
+  const dispatch = useDispatch();
+  const {c} = useSelector(state => state.custom)
+
+
+  const addBtn = () => {
+    dispatch({
+      type: "increment",
+    });
+  };
+  const addBtn25 = () => {
+    dispatch({
+      type: "incrementByValue",
+      payload: 25,
+    });
+  };
+  const subBtn = () => {
+    dispatch({
+      type: "decrement",
+    });
+  };
+  return (
+    <div>
+      <h2>{c}</h2>
+
+      <button onClick={addBtn}>Increment</button>
+      <button onClick={addBtn25}>Increment by 25</button>
+      <button onClick={subBtn}>Decrement</button>
+    </div>
+  );
+};
+export default Home;
+
+
+===== Now tying to access 'c' value in App.js instead of Home.js
+== App.js:
+import Home from "./Home"
+import { useSelector } from "react-redux"
+
+const App = () => {
+  const {c} = useSelector((state)=> state.custom);
+
+  return (
+    <>
+      <div>
+        <h2>{c}</h2>
+        <Home />
+      </div>
+    </>
+  );
+}
+export default App
+
+
+== Home.js:
+import { useDispatch} from "react-redux";
+// useDispatch is to trigger action
+// useSelector is to access state value
+
+const Home = () => {
+//   const value = 20;
+  const dispatch = useDispatch();
+//   const {c} = useSelector(state => state.custom)
+
+
+  const addBtn = () => {
+    dispatch({
+      type: "increment",
+    });
+  };
+  const addBtn25 = () => {
+    dispatch({
+      type: "incrementByValue",
+      payload: 25,
+    });
+  };
+  const subBtn = () => {
+    dispatch({
+      type: "decrement",
+    });
+  };
+  return (
+    <div>
+      <button onClick={addBtn}>Increment</button>
+      <button onClick={addBtn25}>Increment by 25</button>
+      <button onClick={subBtn}>Decrement</button>
+    </div>
+  );
+};
+export default Home;
+
+
+===== Accessing value in both:
+== App.js:
+import Home from "./Home"
+import { useSelector } from "react-redux"
+
+const App = () => {
+  const {c} = useSelector((state)=> state.custom);
+
+  return (
+    <>
+      <div>
+        <h2>{c}</h2>
+        <Home />
+      </div>
+    </>
+  );
+}
+export default App
+
+
+==Home.js:
+import { useDispatch, useSelector } from "react-redux";
+// useDispatch is to trigger action
+// useSelector is to access state value
+
+const Home = () => {
+//   const value = 20;
+  const dispatch = useDispatch();
+  const {c} = useSelector(state => state.custom)
+
+
+  const addBtn = () => {
+    dispatch({
+      type: "increment",
+    });
+  };
+  const addBtn25 = () => {
+    dispatch({
+      type: "incrementByValue",
+      payload: 25,
+    });
+  };
+  const subBtn = () => {
+    dispatch({
+      type: "decrement",
+    });
+  };
+  return (
+    <div>
+      <h3>{c}</h3>
+
+      <button onClick={addBtn}>Increment</button>
+      <button onClick={addBtn25}>Increment by 25</button>
+      <button onClick={subBtn}>Decrement</button>
+    </div>
+  );
+};
+export default Home;
+
+
+
+
