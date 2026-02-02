@@ -22,7 +22,7 @@ function App() {
       <div className="">
         <label htmlFor="">First Name</label>
         {/* register your input into the hook by invoking the "register" function */}
-        <input type="text" {...register("firstName")} />
+        <input type="text" {...register("firstName", { required: true, maxLength: 20 })} />
       </div>
       <br />
 
