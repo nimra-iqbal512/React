@@ -10,20 +10,35 @@ function App() {
     formState: { errors },
   } = useForm()
 
+  // Inside 'data', we can see all the input data
+  const onSubmit = (data)=>{
+    console.log("Submitting the form", data);
+    
+  }
+
   return (
-    <form action="">
+    /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="">
         <label htmlFor="">First Name</label>
+        {/* register your input into the hook by invoking the "register" function */}
         <input type="text" {...register("firstName")} />
       </div>
+      <br />
+
       <div className="">
         <label htmlFor="">Middle Name</label>
         <input type="text" {...register("middleName")} />
       </div>
+      <br />
+
       <div className="">
         <label htmlFor="">Last Name</label>
         <input type="text" {...register("lastName")} />
       </div>
+      <br />
+
+      <input type="submit" name="" id="" />
     </form>
   )
 }
