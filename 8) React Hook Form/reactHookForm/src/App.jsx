@@ -11,9 +11,9 @@ function App() {
   } = useForm()
 
   // Inside 'data', we can see all the input data
-  const onSubmit = (data)=>{
+  const onSubmit = (data) => {
     console.log("Submitting the form", data);
-    
+
   }
 
   return (
@@ -22,7 +22,19 @@ function App() {
       <div className="">
         <label htmlFor="">First Name</label>
         {/* register your input into the hook by invoking the "register" function */}
-        <input type="text" {...register("firstName", { required: true, maxLength: 20 })} />
+        <input
+          type="text"
+          {...register("firstName",
+            { required: true,
+              minLength: {
+                value: 3,
+                message: "First name must have at least 3 characters"
+              }, 
+              maxLength: 20, 
+            })
+          }
+        />
+        {errors.firstName && <p>{errors.firstName.message}</p>}
       </div>
       <br />
 
