@@ -7,7 +7,7 @@ function App() {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm()
 
   // Inside 'data', we can see all the input data
@@ -50,7 +50,7 @@ function App() {
       </div>
       <br />
 
-      <input type="submit" name="" id="" />
+      <input type="submit" name="" id="" disabled={isSubmitting} />
     </form>
   )
 }
