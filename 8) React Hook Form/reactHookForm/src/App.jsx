@@ -11,7 +11,8 @@ function App() {
   } = useForm()
 
   // Inside 'data', we can see all the input data
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    await new Promise(resolve => setTimeout(resolve, 3000));
     console.log("Submitting the form", data);
 
   }
@@ -25,12 +26,13 @@ function App() {
         <input
           type="text"
           {...register("firstName",
-            { required: true,
+            {
+              required: true,
               minLength: {
                 value: 3,
                 message: "First name must have at least 3 characters"
-              }, 
-              maxLength: 20, 
+              },
+              maxLength: 20,
             })
           }
         />
@@ -50,7 +52,11 @@ function App() {
       </div>
       <br />
 
-      <input type="submit" name="" id="" disabled={isSubmitting} />
+      <input
+        type="submit"
+        disabled={isSubmitting}
+        value={isSubmitting ? "Submitting" : "Submit"}
+      />
     </form>
   )
 }
