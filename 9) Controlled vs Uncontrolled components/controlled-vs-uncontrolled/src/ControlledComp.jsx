@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 
 const ControlledComp = () => {
     console.log("ControlledComp Renders");
@@ -10,7 +10,6 @@ const ControlledComp = () => {
         console.log("Email value: " + email);
         console.log("Password value: " + password);
     }
-
 
     return (
         <form onSubmit={onSubmit}>
